@@ -23,7 +23,23 @@ class TestGqlQuery(TestCase):
         expected = 'query { human(input: {data: {id: "1000", name: "test"}}) { name height } }'
         actual = GqlQuery().fields(['name', 'height']).query('human', input={
             "input": {"data": {"id": "1000", "name": "test"}}}).operation().generate()
-        print(actual)
+        self.assertEqual(expected, actual)
+
+    def test_query_with_number_or_bool_input(self):
+        expected = 'query { human(input: {data: {id: 1000, visible: false}}) { name height } }'
+        actual = GqlQuery().fields(['name', 'height']).query('human', input={
+            "input": {"data": {"id": 1000, "visible": False}}}).operation().generate()
+        self.assertEqual(expected, actual)
+
+    def test_query_with_list_input(self):
+        expected = 'query { human(input: {data: {id: 1000, other_ids: [1, 2]}}) { name height } }'
+        actual = GqlQuery().fields(['name', 'height']).query('human', input={
+            "input": {"data": {"id": 1000, "other_ids": [1, 2]}}}).operation().generate()
+        self.assertEqual(expected, actual)
+
+        expected = 'query { human(input: {data: {id: 1000, other_ids: ["1", "2"]}}) { name height } }'
+        actual = GqlQuery().fields(['name', 'height']).query('human', input={
+            "input": {"data": {"id": 1000, "other_ids": ["1", "2"]}}}).operation().generate()
         self.assertEqual(expected, actual)
 
     def test_query_input_with_arguments(self):

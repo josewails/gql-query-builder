@@ -41,11 +41,18 @@ class GqlQuery():
                 key = list(input.keys())[0]
 
             for key, value in input.items():
-                if nested_keys:
-                    inputs.append(f'{key}: "{value}"')  # Nested input won't have double quotes
+                if isinstance(value, bool):
+                    inputs.append(f'{key}: {str(value).lower()}')
+
+                elif isinstance(value, (int, float, list)):
+                    inputs.append(f'{key}: {value}')
 
                 else:
-                    inputs.append(f'{key}: {value}')
+                    if nested_keys:
+                        inputs.append(f'{key}: "{value}"')  # Nested input won't have double quotes
+
+                    else:
+                        inputs.append(f'{key}: {value}')
 
             final_str += '('
 
